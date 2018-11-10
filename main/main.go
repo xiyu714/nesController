@@ -4,19 +4,39 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"time"
+	"strings"
 )
 
 const netDev = "/proc/net/dev"
 
 var netInfo string
 
+const baseineN = 3
+
+var lineN int
+var netLin []string
+var netDevices []NetDevice
+
+type NetDevice struct {
+	face     string
+	Receive  NetInfo
+	Transmit NetInfo
+}
+
+type NetInfo struct {
+	bytes      string
+	packets    string
+	errs       string
+	drop       string
+	fifo       string
+	frame      string
+	compressed string
+	multicast  string
+}
+
 func main() {
-	for {
-		getProcNetDev()
-		fmt.Println(netInfo)
-		time.Sleep(time.Duration(2) * time.Second)
-	}
+	getProcNetDev()
+	fmt.Println(netInfo)
 }
 
 func getProcNetDev() {
@@ -25,4 +45,9 @@ func getProcNetDev() {
 		log.Fatal(err)
 	}
 	netInfo = string(b)
+}
+
+func getLine() {
+	netLin = strings.Split(netInfo, "\n")
+	netLin = netLin[2:]
 }
