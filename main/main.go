@@ -34,6 +34,12 @@ type NetInfo struct {
 	frame      int
 	compressed int
 	multicast  int
+	diff
+}
+
+type diff struct {
+	bytes   int
+	packets int
 }
 
 func main() {
@@ -44,9 +50,9 @@ func main() {
 func Show() {
 	for {
 		netrefresh()
-		for _, n := range netDevices {
-			fmt.Printf("%s: %dKb/s\n", n.face, n.Receive.bytes/1024)
-		}
+		//for _, n := range netDevices {
+		//	//fmt.Printf("%s: %dKb/s\n", n.face, n.Receive.bytes/1024)
+		//}
 		time.Sleep(time.Duration(1) * time.Second)
 	}
 }
