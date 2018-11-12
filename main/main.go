@@ -13,9 +13,6 @@ const netDev = "/proc/net/dev"
 
 var netInfo string
 
-const baseineN = 3
-
-var lineN int
 var netLin []string
 var netDevices []NetDevice
 
@@ -43,15 +40,15 @@ type diff struct {
 }
 
 func main() {
-	getProcNetDev()
-	fmt.Println(netInfo)
+	Show()
 }
 
 func Show() {
+
 	for {
 		netrefresh()
 		for _, n := range netDevices {
-			fmt.Printf("%s: %dKb/s\n", n.face, n.Receive.diff.bytes/1024)
+			fmt.Printf("%s: %.2fKb/s\n", n.face, float32(n.Receive.diff.bytes)/1024)
 		}
 		time.Sleep(time.Duration(1) * time.Second)
 	}

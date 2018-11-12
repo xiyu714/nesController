@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -48,4 +49,10 @@ func TestSlice(t *testing.T) {
 		fmt.Println(x[1])
 	}()
 	fmt.Println("正常执行")
+}
+
+func TestFloat(t *testing.T) {
+	a := 2
+	x := float32(a)
+	fmt.Println(reflect.TypeOf(x))
 }
