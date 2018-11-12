@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestGetline(t *testing.T) {
@@ -20,6 +21,14 @@ func TestGetdevices(t *testing.T) {
 	fmt.Println(netDevices)
 }
 
+func TestNetrefresh(t *testing.T) {
+	netrefresh()
+	fmt.Println(netDevices)
+	time.Sleep(time.Duration(1) * time.Second)
+	netrefresh()
+	fmt.Println(netDevices)
+}
+
 func TestShow(t *testing.T) {
 	Show()
 }
@@ -32,13 +41,11 @@ func TestSlice(t *testing.T) {
 			if r := recover(); r != nil {
 				fmt.Println(r)
 			}
-			fmt.Println("我执行了？")
+			//fmt.Println("我执行了？")
+			x = append(x, 1, 2)
+			fmt.Println(x[1])
 		}()
 		fmt.Println(x[1])
 	}()
 	fmt.Println("正常执行")
-}
-
-func t(x []int) {
-
 }

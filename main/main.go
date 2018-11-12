@@ -50,15 +50,14 @@ func main() {
 func Show() {
 	for {
 		netrefresh()
-		//for _, n := range netDevices {
-		//	//fmt.Printf("%s: %dKb/s\n", n.face, n.Receive.bytes/1024)
-		//}
+		for _, n := range netDevices {
+			fmt.Printf("%s: %dKb/s\n", n.face, n.Receive.diff.bytes/1024)
+		}
 		time.Sleep(time.Duration(1) * time.Second)
 	}
 }
 
 func netrefresh() {
-	netDevices = netDevices[:0]
 	getProcNetDev()
 	getLine()
 	getNetDevices()
@@ -99,8 +98,32 @@ func getNetDevices() {
 		tn.compressed, _ = strconv.Atoi(ts[15])
 		tn.multicast, _ = strconv.Atoi(ts[16])
 
-		dv := NetDevice{strings.Trim(ts[0], ":"), rn, tn}
+		//处理diff
+		var rdif diff
+		var tdif diff
+		func() {
+			defer func() {
+				err := recover()
+				if err != nil {
+					var x = diff{0, 0}
+					rn.diff = x
+					tn.diff = x
+					dv := NetDevice{strings.Trim(ts[0], ":"), rn, tn}
+					netDevices = append(netDevices, dv)
+				}
+			}()
+			oldR := netDevices[i].Receive
+			rdif.bytes = rn.bytes - oldR.bytes
+			rdif.packets = rn.packets - oldR.packets
+			rn.diff = rdif
 
-		netDevices = append(netDevices, dv)
+			oldT := netDevices[i].Transmit
+			tdif.bytes = tn.bytes - oldT.bytes
+			tdif.packets = tn.packets - oldT.packets
+			tn.diff = tdif
+
+			dv := NetDevice{strings.Trim(ts[0], ":"), rn, tn}
+			netDevices[i] = dv
+		}()
 	}
 }
